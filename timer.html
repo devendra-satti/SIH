@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIH 2025 Hackathon</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* General & Body Styling */
+        body {
+            background-color: #f0f0f5; /* Light background */
+            color: #333; /* Darker text */
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden; /* Prevent horizontal scroll on resize */
+            position: relative;
+            background-image: none;
+            font-size: 18px; /* Base font size, will scale other elements */
+        }
+
+        /* --- Global Elements (Header, Footer) --- */
+        .main-header {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+            justify-content: space-between;
+            align-items: center;
+            padding: 2vw 4vw; /* Responsive padding */
+            box-sizing: border-box;
+            z-index: 100;
+        }
+
+        /* Updated: Remove white background, make logos responsive */
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 1.5vw; /* Responsive gap */
+            padding: 1vw 0; /* Minimal padding */
+            flex-wrap: wrap; /* Allow logos to wrap if many */
+            justify-content: center; /* Center logos if they wrap */
+            background-color: transparent; /* Remove white background */
+            box-shadow: none; /* Remove shadow */
+            margin: 0.5vw; /* Small margin for separation */
+        }
+
+        .logo-group img {
+            height: auto; /* Maintain aspect ratio */
+            max-height: 10vw; /* Max height relative to viewport width */
+            width: auto;
+            max-width: 50vw; /* Max width for individual logos */
+            object-fit: contain; /* Ensure image fits without cropping */
+        }
+
+        .main-footer {
+            padding: 1.5rem; /* Use rem for consistent scaling with base font */
+            font-size: 0.9em; /* Relative to parent font size */
+            color: #666; /* Softer dark color */
+            text-align: center;
+            z-index: 100;
+        }
+
+        /* --- Main Content Containers --- */
+        .content-container {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            position: relative;
+            flex-direction: column;
+            text-align: center;
+            padding: 2rem; /* Add padding to content area */
+            box-sizing: border-box;
+        }
+        
+        .landing-page-content,
+        .main-timer-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 50;
+            background-color: transparent; /* Ensure content background is transparent */
+        }
+
+        .landing-page-content {
+            background-color: #f0f0f5; /* Light background for landing page */
+        }
+
+
+        .main-timer-page {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* Updated styling for Hackathon Name */
+        .hackathon-name {
+            font-family: 'Poppins', sans-serif;
+            font-size: 3.5em; /* Significantly larger */
+            font-weight: 800;
+            color:black; /* Dark color for text */
+            margin-top: 3rem; /* Increased margin */
+            margin-bottom: 2rem;
+            line-height: 1.2; /* Improve readability for larger text */
+        }
+
+        /* --- Timer & Button Styling --- */
+        .timer-container {
+            position: relative;
+            width: 50vmin; /* Responsive size, viewport min dimension */
+            height: 50vmin;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 3rem; /* Increased margin */
+            background: transparent;
+        }
+
+        .timer-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #fff; /* White background for the ring area */
+            box-shadow: 
+                0 0 40px 15px rgba(0, 245, 212, 0.5), /* Enhanced glow */
+                0 0 80px 30px rgba(0, 245, 212, 0.4);
+        }
+
+        .timer-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 8rem; /* Much larger timer text */
+            font-weight: 700;
+            color: #00887a; /* Darker text for visibility */
+            text-shadow: 
+                0 0 10px rgba(0, 245, 212, 0.3); /* Subtle text glow */
+            z-index: 1;
+        }
+
+        .start-button {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8rem; /* Larger button text */
+            font-weight: 600;
+            padding: 1.2em 3em; /* Responsive padding */
+            border: 2px solid #6c5ce7;
+            background-color: transparent;
+            color: #6c5ce7;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 0 15px 3px rgba(108, 92, 231, 0.5); /* Enhanced shadow */
+            z-index: 2;
+        }
+
+        .start-button:hover {
+            background-color: #6c5ce7;
+            color: #fff;
+            box-shadow: 
+                0 0 25px 8px rgba(108, 92, 231, 0.7);
+        }
+
+        /* Classes to be toggled by JavaScript for transitions */
+        .landing-page-content.hidden {
+            transform: scale(0); /* Scale to hide, looks better than X-axis collapse */
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .main-timer-page.visible {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        /* Media Queries for better responsiveness on very small screens */
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px;
+            }
+            .main-header {
+                flex-direction: column; /* Stack logos vertically */
+                gap: 1.5rem;
+                padding: 1.5rem;
+            }
+            .logo-group {
+                width: 100%; /* Take full width when stacked */
+                justify-content: center;
+                gap: 1rem;
+            }
+            .logo-group img {
+                max-height: 8vw; /* Adjust max height for mobile */
+                max-width: 40vw; /* Adjust max width for mobile */
+            }
+            .hackathon-name {
+                font-size: 1.8em;
+                margin-top: 2rem;
+                margin-bottom: 1.5rem;
+            }
+            .timer-text {
+                font-size: 5rem;
+            }
+            .start-button {
+                font-size: 1.5rem;
+                padding: 1em 2em;
+            }
+            .timer-container {
+                width: 70vmin;
+                height: 70vmin;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                font-size: 14px;
+            }
+            .logo-group img {
+                max-height: 10vw;
+                max-width: 50vw;
+            }
+            .timer-text {
+                font-size: 4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="logo-group">
+            <img src="https://sasi.ac.in/wp-content/uploads/2024/08/SASI-LOGO-960x188-1-800x157-1.png" alt="SASI College Logo">
+        </div>
+        <div class="logo-group">
+            <img src="https://sih.gov.in/img1/SIH2025-logo.png" alt="SIH Logo">
+        </div>
+    </header>
+
+    <div class="content-container">
+        <main class="landing-page-content" id="landingPage">
+            <div class="timer-container">
+                <div class="timer-ring"></div>
+                <div class="timer-text">06:00:00</div>
+            </div>
+            <div class="hackathon-name">Smart India Hackathon @ SASI</div>
+            <button class="start-button" id="startButton">Start Hackathon</button>
+        </main>
+
+        <main class="main-timer-page" id="mainTimerPage">
+            <div class="timer-container">
+                <div class="timer-ring"></div>
+                <div class="timer-text" id="runningTimerText">05:59:59</div>
+            </div>
+            <div class="hackathon-name">Smart India Hackathon @ SASI</div>
+        </main>
+    </div>
+
+    <footer class="main-footer">
+        <p>© 2025 Smart India Hackathon</p>
+    </footer>
+
+    <script>
+        const timerTextLanding = document.querySelector('#landingPage .timer-text');
+        const runningTimerText = document.getElementById('runningTimerText');
+        const startButton = document.getElementById('startButton');
+        const landingPage = document.getElementById('landingPage');
+        const mainTimerPage = document.getElementById('mainTimerPage');
+
+        let endTime = 0;
+        let timerInterval;
+
+        function startHackathon() {
+            endTime = Date.now() + (6 * 60 * 60 * 1000); 
+            localStorage.setItem('hackathonEndTime', endTime);
+
+            landingPage.classList.add('hidden');
+            mainTimerPage.classList.add('visible');
+
+            updateTimer();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            const now = Date.now();
+            const timeLeft = endTime - now;
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                runningTimerText.textContent = '00:00:00';
+                localStorage.removeItem('hackathonEndTime');
+                return;
+            }
+
+            const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+            const formattedTime = 
+                `${String(hours).padStart(2, '0')}:` +
+                `${String(minutes).padStart(2, '0')}:` +
+                `${String(seconds).padStart(2, '0')}`;
+            
+            runningTimerText.textContent = formattedTime;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const storedEndTime = localStorage.getItem('hackathonEndTime');
+            if (storedEndTime) {
+                endTime = parseInt(storedEndTime, 10);
+                
+                landingPage.classList.add('hidden');
+                mainTimerPage.classList.add('visible');
+
+                updateTimer();
+                timerInterval = setInterval(updateTimer, 1000);
+            } else {
+                timerTextLanding.textContent = '06:00:00';
+                startButton.addEventListener('click', startHackathon);
+            }
+        });
+    </script>
+</body>
+</html>
